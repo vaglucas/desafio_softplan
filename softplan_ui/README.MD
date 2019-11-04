@@ -13,3 +13,13 @@
 - O Arquvio CSV é enviado para um bucket S3 AWS;
 - Assim que o Bucket recebe um arquivo um trigger é aciona uma funçao lambda para validar o arquivo
 
+
+## Run app
+
+            docker-compose up
+ou
+            
+            flask run 
+
+
+
