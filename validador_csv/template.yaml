@@ -17,13 +17,16 @@ Resources:
       CodeUri: validador/
       Handler: app.lambda_handler
       Runtime: python3.7
+      Policies: [AmazonDynamoDBFullAccess,AmazonS3FullAccess]
+      MemorySize: 256
+      Timeout: 900
       Events:
         Validador:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /validador
             Method: post
-      Timeout: 900
+      
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
