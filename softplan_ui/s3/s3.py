@@ -2,7 +2,9 @@
 from botocore.exceptions import ClientError
 import logging
 from datetime import datetime
-from credentials import _REGION_NAME_S3, _BUCKET, boto_sess
+
+from softplan_ui.credentials import _REGION_NAME_S3, _BUCKET, boto_sess
+
 class S3Bucket():
   
     def __init__(self):
@@ -16,9 +18,7 @@ class S3Bucket():
         :param bucket_name: Unique string name
         :return: True if bucket is created, else False
         """
-        try:
-            
-            
+        try:            
             response = self.s3.list_buckets()
             map_tr = [True if a['Name'] == bucket_name else False for a in response['Buckets']]
             if True not in map_tr:
@@ -51,7 +51,7 @@ class S3Bucket():
             return False
         return True
 
-    def download_file(self, object_name, file_name='scenarios.pkl',bucket_name=_BUCKET ):
+    def download_file(self, object_name, file_name=None,bucket_name=_BUCKET ):
 
         if object_name is None:
             object_name = file_name

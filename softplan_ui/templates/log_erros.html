@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Upload File</title>
+  <title>Log erros</title>
 
   <!-- Custom fonts for this template-->
   <link href="../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -113,7 +113,7 @@
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Upload File</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Log errors File</h6>
                   <div class="dropdown no-arrow">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
@@ -123,17 +123,7 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-              <form action="/" method="POST" enctype="multipart/form-data">
-
-                  <div class=" pt-4 pb-2">
-                        {%if status%}
-                        <div class="alert alert-info"><span>Arquivo carregado com sucesso, em alguns estante poderá verificar o log do arquivo</span></div>
-                        {%endif%}
-                        <input type="file" name="file_input" id="file_input" placeolder="Select a file">
-                        <button class="alert alert-info" type="submit" >Upload File</button>  
-                      
-                    </div> 
-                    </form>
+               
                   </div>
                   </div>
                 <div class="row">
