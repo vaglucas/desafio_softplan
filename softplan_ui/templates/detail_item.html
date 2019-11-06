@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+              {% block title_card %}
+                 Log arquivo {{ id }}
+              {% endblock%}
+                {% block content %}
+                    
+                  <ul>
+                  {% for items in _data %}                    
+                    <li class='detail_file text-primary' i>{{items['column']}}</li>
+                    <ul>
+                    <li>Describe: {{items['describe']}} </li>
+                    <li>Percent zeros: {{items['percent_zeros']}} </li>
+                    <li>Percent nan: {{items['percent_nan']}} </li>
+                    <li>Type: {{items['type_colum']}} </li>
+                    <li>Unique Values: {{items['unique_values']}} </li>
+                    </ul>
+                  {% endfor %}
+                  </ul>
+                {% endblock %}

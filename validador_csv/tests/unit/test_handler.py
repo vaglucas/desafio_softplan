@@ -36,9 +36,9 @@ def apigw_event():
                   "arn": "arn:{partition}:s3:::softplan-s3"
                 },
                 "object": {
-                  "key": "total.csv",
+                  "key": "total.csv",#nome do arquivo no S3 da amazon
                   "size": 4048,
-                  "eTag": "f4993f407092a8d53663e51654e93410",
+                  "eTag": "f4993f407092a8d53663e51654e93410",#tag do arquivo
                   "sequencer": "0A1B2C3D4E5F678901"
                 }
               }
@@ -52,5 +52,4 @@ def test_lambda_handler(apigw_event):
     ret = app.lambda_handler(apigw_event, "")
     data = json.loads(ret["body"])
     assert ret["statusCode"] == 200
-    assert "message" in ret["body"]
     # assert "location" in data.dict_keys()

@@ -1,0 +1,22 @@
+branch-defaults:
+  master:
+    environment: upload_s3
+    group_suffix: null
+environment-defaults:
+  sandboxapi:
+    branch: null
+    repository: dev
+global:
+  application_name: upload_s3
+  branch: master
+  default_ec2_keyname: null
+  default_platform: python-3.6
+  default_region: eu-west-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  repository: dev
+  sc: git
+  workspace_type: Application

@@ -5,10 +5,11 @@ import numpy as np
 import pandas.io.sql as psql
 from sklearn.preprocessing import MinMaxScaler, OrdinalEncoder, OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer, MissingIndicator
-from dynamo import TableCreate
+from dynamo import TableCreate, DecimalEncoder
 from datetime import datetime
 import re
-from decimal import Decimal
+import decimal 
+import json
 
 def getErrorDesc(info):
     exc_type, exc_obj, exc_tb = info
@@ -366,24 +367,37 @@ class InitDataFrame(object):
             try:
                 #print("_" * 20)
                 print("COLUMN ANALYTIC {}".format(item))
-                percent_zeros = Decimal(self.percentage_zeros_in_column(item)*100)
-                percent_nan = Decimal(self.percentage_nan_in_column(item)*100)
+                percent_zeros = decimal.Decimal(self.percentage_zeros_in_column(item)*100)
+                percent_nan = decimal.Decimal(self.percentage_nan_in_column(item)*100)
                 type_colum = str(self.df[item].dtypes)
-                if len(self.df[item][0].split('/')) > 2:
-                    try:
+                try:
+                    if len(self.df[item][0].split('/')) > 2:
                         type_colum = 'date'
-                    except:
-                        type_colum = str(self.df[item].dtypes)
-                column_item.append({'column': item, 'percent_nan': round(percent_nan,4),
-                                     'percent_zeros': round(percent_zeros,4), 
-                                     'type_colum':type_colum,
-                                     'describe':dict(self.df[item].describe())
-                                     })
+                except:
+                    type_colum = str(self.df[item].dtypes)
+                
+                print('')                
                 
                 
+                describe = dict(self.df[item].describe())
+                uniques_values = []
+                if describe.get('unique',11)<10 and type_colum == 'object':
+                    uniques_values = [str(i) for i in list(self.df[item].unique())]
+                data_ = {'column': item,
+                        'type_colum':type_colum,
+                        'percent_nan': round(percent_nan,4),
+                        'percent_zeros': round(percent_zeros,4), 
+                        'describe':describe,
+                        'unique_values':uniques_values}
+                data_save = json.loads(json.dumps(dict(data_),cls=DecimalEncoder),
+                                      parse_float=decimal.Decimal, 
+                                      parse_int=decimal.Decimal)
+                column_item.append(data_save)                
+                                
                 print("{} - {} - {}".format(percent_nan, percent_zeros, item))
                 print("\n")
             except Exception as e:
+                print(getErrorDesc(sys.exc_info()))
                 column_item.append({'error_column':item})
                 
 

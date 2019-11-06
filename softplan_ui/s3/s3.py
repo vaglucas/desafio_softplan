@@ -8,9 +8,22 @@ from credentials import _REGION_NAME_S3, _BUCKET, boto_sess
 class S3Bucket():
   
     def __init__(self):
-        
+
         self.s3 = boto_sess.client('s3', region_name=_REGION_NAME_S3)
-    
+        
+    def delete_bucket_s3(self, bucket_name):
+        try:            
+            response = self.s3.list_buckets()
+            map_tr = [True if a['Name'] == bucket_name else False for a in response['Buckets']]
+            if True not in map_tr:
+                self.s3.delete_bucket(Bucket=bucket_name)
+            else:
+                return True
+        except ClientError as e:
+            logging.error(e)
+            return False
+        return True
+
   
     def create_bucket_s3(self, bucket_name=_BUCKET, add_trigger=False, lambda_arn=None):
         """ Create an Amazon S3 bucket
@@ -51,16 +64,7 @@ class S3Bucket():
             return False
         return True
 
-    def download_file(self, object_name, file_name=None,bucket_name=_BUCKET ):
-
-        if object_name is None:
-            object_name = file_name
-        try:
-            response = self.s3.get_object(Bucket=bucket_name, Key=object_name)
-        except ClientError as e:
-            logging.error(e)
-            return False
-        return response
+     
     
     
    

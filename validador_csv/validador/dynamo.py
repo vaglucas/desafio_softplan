@@ -1,6 +1,6 @@
 import decimal
 import json
-
+import numpy as np
 import boto3
 from boto3.dynamodb.conditions import Key
 from boto3.session import Session
@@ -17,8 +17,11 @@ class DecimalEncoder(json.JSONEncoder):
                 return float(o)
             else:
                 return int(o)
+        if isinstance(o, np.integer):
+            return int(o)
+        elif isinstance(o, np.floating):
+            return float(o)
         return super(DecimalEncoder, self).default(o)
-
 
 class TableCreate():
 
