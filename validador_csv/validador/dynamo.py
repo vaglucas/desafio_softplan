@@ -20,9 +20,9 @@ class DecimalEncoder(json.JSONEncoder):
         return super(DecimalEncoder, self).default(o)
 
 
-class TableCreate(table_name):
+class TableCreate():
 
-    def __init__(self):
+    def __init__(self, table_name):
         self.client = boto3.client('dynamodb')
         self.resurce = boto3.resource('dynamodb')
         self.table_name = table_name
@@ -35,9 +35,12 @@ class TableCreate(table_name):
         self.table = self.db.Table(self.table_name)
 
     def save(self, data):
-        self.table.put_item(
+        try:
+            self.table.put_item(
                 Item=data
                 )
+        except Exception as e:
+            print(e)
 
     def get_info(self, id):
         try:
@@ -48,6 +51,7 @@ class TableCreate(table_name):
             return None
 
     def create_table(self):
+
         existing_tables = self.client.list_tables()['TableNames']
         if self.table_name not in existing_tables:
             response = self.resurce.create_table(

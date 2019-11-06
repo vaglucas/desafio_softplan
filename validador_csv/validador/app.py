@@ -2,10 +2,10 @@ import json
 from datetime import datetime
 from io import StringIO
 import boto3
-import dynamo as db
 import numpy as np
 import pandas as pd
-from .extraction import InitDataFrame
+import sys
+from extraction import InitDataFrame, getErrorDesc
 
 
 def lambda_handler(event, context):
@@ -39,29 +39,28 @@ def lambda_handler(event, context):
                 file_name = str(record['s3']['object']['key'])
                 size = str(record['s3']['object']['size'])
                 fileObj = s3.get_object(Bucket=bucket_name, Key=file_name)
-                file_content = fileObj["Body"].read().splitlines()
-                rows = 0
-                table = db.TableCreate()
+                file_content = fileObj["Body"].read()
                 try:
                     columns = []
                     info = []
-                    df = pd.read_csv(StringIO(file_content))
-                    ex = Extraction(df)
+                    df = pd.read_csv(StringIO(file_content.decode()))
+                    ex = InitDataFrame(df)
                     ex._normalize_columns_name()
-                    ex.data_frame_analytics(file_name)
-                    response = s3.put_object_tagging(Bucket=bucket_name, Key=file_name, Tagging=tag)
-
+                    result_save = ex.data_frame_analytics(0.002, file_name)
+                    tag = {'TagSet': [{'Key': 'validated', 'Value': 'True'}]}
+                    response = s3.put_object_tagging(Bucket=bucket_name, Key=file_name, Tagging=tag)                    
                 except Exception as e:
                     tag = {'TagSet': [{'Key': 'validated', 'Value': 'False'}]}
                     response = s3.put_object_tagging(Bucket=bucket_name, Key=file_name, Tagging=tag)
-                    print(e)
+                    return {"statusCode": 500,"body": json.dumps({"message": "Error {}".format(getErrorDesc(sys.exc_info()))}),}
+        print(result_save)
         return {
             "statusCode": 200,
-            "body": json.dumps({"message": "File Upload {} row inserted {}  ".format(file_name, rows)}),
+            "body": json.dumps({"message": "File Upload {} row inserted {}  ".format(file_name, 0)}),
             }
     except Exception as e:
         print(e)
         return {
             "statusCode": 500,
-            "body": json.dumps({"message": "Error "}),
+            "body": json.dumps({"message": "Error {}".format(getErrorDesc(sys.exc_info()))}),
             }

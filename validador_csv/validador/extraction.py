@@ -1,12 +1,14 @@
 import time
-import sys
+import sys, os
 import pandas as pd
 import numpy as np
 import pandas.io.sql as psql
 from sklearn.preprocessing import MinMaxScaler, OrdinalEncoder, OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer, MissingIndicator
 from dynamo import TableCreate
+from datetime import datetime
 import re
+from decimal import Decimal
 
 def getErrorDesc(info):
     exc_type, exc_obj, exc_tb = info
@@ -18,7 +20,7 @@ class InitDataFrame(object):
     df = pd.DataFrame()
     threshold = 0
 
-    def __init__(self, df, data_frame_name, dict_criterion=None, threshold=0):
+    def __init__(self, df, dict_criterion=None, threshold=0):
         """
 		data frame manipulation
 		:param df: data frame or string table name for load dataframe result
@@ -29,8 +31,8 @@ class InitDataFrame(object):
         self.dict_criterion = dict_criterion
         self.threshold = threshold
         self.table_dinamo_domain = TableCreate('trace_domain')
-        self.data_frame_name = data_frame_name
-        self.table_df = TableCreate(data_frame_name)
+        self.data_frame_name = 'data_log_process'
+        self.table_df = TableCreate(self.data_frame_name)
 
     def _normalize_columns_name(self, _df=None):
         """
@@ -357,34 +359,34 @@ class InitDataFrame(object):
         except:
             return x
 
-    def data_frame_analytics(self, threshold=0.7):
-
-        columns = self.df.columns
-        data_log = {'info':[]}
-        for item in columns:
-            print("#" * 20)
-            print("_" * 20)
-            print("COLUMN ANALYTIC {}".format(item))
-            if item != 'id':
-                uniques = self.df[item].unique()
-                value_counts = self.df[item].value_counts()
+    def data_frame_analytics(self, threshold, file_name_id):
+        
+        column_item = []
+        for item in self.df.columns:
             try:
-                print("Encoder\n{} ".format(self.get_dict(item)))
+                #print("_" * 20)
+                print("COLUMN ANALYTIC {}".format(item))
+                percent_zeros = Decimal(self.percentage_zeros_in_column(item)*100)
+                percent_nan = Decimal(self.percentage_nan_in_column(item)*100)
+                type_colum = str(self.df[item].dtypes)
+                if len(self.df[item][0].split('/')) > 2:
+                    try:
+                        type_colum = 'date'
+                    except:
+                        type_colum = str(self.df[item].dtypes)
+                column_item.append({'column': item, 'percent_nan': round(percent_nan,4),
+                                     'percent_zeros': round(percent_zeros,4), 
+                                     'type_colum':type_colum,
+                                     'describe':dict(self.df[item].describe())
+                                     })
+                
+                
+                print("{} - {} - {}".format(percent_nan, percent_zeros, item))
+                print("\n")
             except Exception as e:
-                print('Column {} not found enconder'.format(item))
+                column_item.append({'error_column':item})
+                
 
-            percent_zeros = self.percentage_zeros_in_column(item)
-            percent_nan = self.percentage_nan_in_column(item)
-
-            if percent_nan >= threshold or percent_zeros >= threshold:
-                data_log['info'].append({'column': item, 'percent_nan': percent_nan, 'percent_zeros': percent_zeros, 'info':self.df[item].describe()})
-
-            print('Percet of zeros in {} \n{}'.format(item, (percent_zeros * 100)))
-            print('Percent of nan in {} \n{}'.format(item, (percent_nan * 100)))
-
-            print("_" * 20)
-            print("\n")
-
-        if len(data_log) > 0:
-            data_log.update({'id':self.data_frame_name})
-            self.table_df.save()
+        #if len(column_item) > 0:
+        print(column_item)
+        return self.table_df.save({'id':file_name_id,'date':str(datetime.now()),'column_info':column_item})

@@ -3,7 +3,7 @@ from botocore.exceptions import ClientError
 import logging
 from datetime import datetime
 
-from softplan_ui.credentials import _REGION_NAME_S3, _BUCKET, boto_sess
+from credentials import _REGION_NAME_S3, _BUCKET, boto_sess
 
 class S3Bucket():
   

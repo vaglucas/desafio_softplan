@@ -8,7 +8,7 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 900
 
 Resources:
   ValidadorFunction:
@@ -18,7 +18,7 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.7
       Policies: [AmazonDynamoDBFullAccess,AmazonS3FullAccess]
-      MemorySize: 256
+      MemorySize: 512
       Timeout: 900
       Events:
         Validador:
