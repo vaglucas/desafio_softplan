@@ -1,6 +1,6 @@
 ## Upload do arquivo
 
-### Configuraçao
+### Configuração
 
 - Criar um arquvio credentials.env contendo as credenciais da aws
             
