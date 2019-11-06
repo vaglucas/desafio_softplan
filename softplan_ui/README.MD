@@ -21,5 +21,8 @@ ou
             
             flask run 
 
+---
 
+A apliçao possui as configurações necessárias deploy em uma maquina EBS
 
+https://docs.aws.amazon.com/it_it/elasticbeanstalk/latest/dg/create-deploy-python-flask.html
