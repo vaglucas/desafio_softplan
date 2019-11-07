@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import sys
 from extraction import InitDataFrame, getErrorDesc
-
+import csv
 
 def lambda_handler(event, context):
     """Sample pure Lambda function
@@ -43,7 +43,7 @@ def lambda_handler(event, context):
                 try:
                     columns = []
                     info = []
-                    df = pd.read_csv(StringIO(file_content.decode()))
+                    df = pd.read_csv(StringIO(file_content.decode()), sep=get_sep(file_content))
                     ex = InitDataFrame(df)
                     ex._normalize_columns_name()
                     result_save = ex.data_frame_analytics(0.002, file_name)
@@ -64,3 +64,12 @@ def lambda_handler(event, context):
             "statusCode": 500,
             "body": json.dumps({"message": "Error {}".format(getErrorDesc(sys.exc_info()))}),
             }
+
+
+def get_sep(file_content):
+    try:
+        dialect = csv.Sniffer().sniff(file_content)
+        return dialect.delimiter  
+    except:
+        print('Error get sep')
+        return ','
