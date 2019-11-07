@@ -30,7 +30,7 @@ para start da aplicação
 Função lambda (AWS) para analise de arquivos
 
 para start da aplicação
-[README.MD](validador_csv/README.MD)
+[README.MD](validador_csv/README.md)
 
 ---
 
