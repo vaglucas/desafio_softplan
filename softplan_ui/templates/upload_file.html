@@ -7,9 +7,11 @@
               <form action="/" method="POST" enctype="multipart/form-data">
 
                   <div class=" pt-4 pb-2">
-                        {%if status_upload%}
-                        <div class="alert alert-info"><span>Arquivo carregado com sucesso, em alguns instantes poderá verificar o log do arquivo</span></div>
-                        {%endif%}
+                        {% if status_upload %}
+                          <div class="alert alert-info"><span>Arquivo carregado com sucesso, em alguns instantes poderá verificar o log do arquivo</span></div>
+                        {% else %}
+                          <div class="alert alert-danger"><span>Arquivo nao carregado, arquivo nao è um .csv</span></div>
+                        {% endif %}
                         <input type="file" name="file_input" id="file_input" required placeolder="Select a file">
                         <button class="alert alert-info" type="submit" >Upload File</button>  
                       
