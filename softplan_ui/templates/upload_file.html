@@ -10,7 +10,9 @@
                         {% if status_upload %}
                           <div class="alert alert-info"><span>Arquivo carregado com sucesso, em alguns instantes poderá verificar o log do arquivo</span></div>
                         {% else %}
-                          <div class="alert alert-danger"><span>Arquivo nao carregado, arquivo nao è um .csv</span></div>
+                          {% if status_upload == 'NO_CSV' %}
+                            <div class="alert alert-danger"><span>Arquivo nao carregado, arquivo nao è um .csv</span></div>
+                          {% endif %}
                         {% endif %}
                         <input type="file" name="file_input" id="file_input" required placeolder="Select a file">
                         <button class="alert alert-info" type="submit" >Upload File</button>  

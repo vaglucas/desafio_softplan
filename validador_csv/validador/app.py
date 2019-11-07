@@ -40,10 +40,11 @@ def lambda_handler(event, context):
                 size = str(record['s3']['object']['size'])
                 fileObj = s3.get_object(Bucket=bucket_name, Key=file_name)
                 file_content = fileObj["Body"].read()
+                sep_file = get_sep(file_content.decode())
                 try:
                     columns = []
                     info = []
-                    df = pd.read_csv(StringIO(file_content.decode()), sep=get_sep(file_content))
+                    df = pd.read_csv(StringIO(file_content.decode()), sep=sep_file)
                     ex = InitDataFrame(df)
                     ex._normalize_columns_name()
                     result_save = ex.data_frame_analytics(0.002, file_name)
@@ -70,6 +71,6 @@ def get_sep(file_content):
     try:
         dialect = csv.Sniffer().sniff(file_content)
         return dialect.delimiter  
-    except:
-        print('Error get sep')
+    except Exception as e :
+        print(e.args)
         return ','

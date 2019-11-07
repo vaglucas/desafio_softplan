@@ -14,6 +14,8 @@ def home():
             s3 = S3Bucket()
             file_name = secure_filename(csv_files.filename)
             status = s3.upload_file(csv_files, object_name=file_name)
+        else:
+            status = 'NO_CSV'
         return render_template('upload_file.html', status_upload=status)
     else:
         return render_template('upload_file.html')
