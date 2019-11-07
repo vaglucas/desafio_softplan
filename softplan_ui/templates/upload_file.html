@@ -10,7 +10,7 @@
                         {% if status_upload %}
                           <div class="alert alert-info"><span>Arquivo carregado com sucesso, em alguns instantes poderá verificar o log do arquivo</span></div>
                         {% else %}
-                          {% if status_upload == 'NO_CSV' %}
+                          {% if status_upload == False %}
                             <div class="alert alert-danger"><span>Arquivo nao carregado, arquivo nao è um .csv</span></div>
                           {% endif %}
                         {% endif %}

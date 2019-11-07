@@ -6,13 +6,10 @@ import os
 
 ambient = os.environ.get('ambient', "0")
 config = Config(RepositoryEnv('config.env'))
-if ambient == "0" or ambient == 'test':
-    cred = Config(RepositoryEnv('credentials.env'))
-    _S3API = cred.get('aws_access_key_id', None)
-    _S3SECRET = cred.get('aws_secret_access_key', None)
-else:
-    _S3SECRET = os.environ.get('SECRET_KEY', None)
-    _S3API = os.environ.get('ACCESS_KEY', None)
+
+cred = Config(RepositoryEnv('credentials.env'))
+_S3API = cred.get('aws_access_key_id', None)
+_S3SECRET = cred.get('aws_secret_access_key', None)
 
 _BUCKET =  config.get('BUCKET')
 _REGION_NAME_S3 = config.get('REGION_NAME_S3', 'us-west-1')
